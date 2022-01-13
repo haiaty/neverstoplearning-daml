@@ -1,0 +1,25 @@
+
+module Second_Token where
+
+import Daml.Script
+-- this is the token template
+template SecondToken 
+    with
+        owner: Party
+    where
+        signatory owner
+
+
+token_test_1 : Script (ContractId SecondToken)
+token_test_1 = script do
+    alice <- allocateParty "Alice"
+    submit alice do
+        createCmd SecondToken with owner = alice
+
+
+token_test_2 : Script ()
+token_test_2 = script do
+        bob <- allocateParty "Bob"
+        alice <- allocateParty "Alice"
+        submitMustFail alice do
+            createCmd SecondToken with owner = bob
