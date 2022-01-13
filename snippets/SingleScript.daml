@@ -1,0 +1,46 @@
+
+
+-- the module name should have the same name of the .daml file
+module SingleScript where
+
+
+import Daml.Script
+
+-- import of contracts templates from other module (which in this case shoukd be in a file calle Token_Test.daml)
+import Token_Test
+
+-- import of contracts templates from other module (which in this case shoukd be in a file calle Second_Token.daml)
+import Second_Token
+
+
+
+-- this is needed to specify the return type of the script. In this case it return void
+test_1 : Script ()
+
+
+test_1 = script do
+    -- parties creation
+    alice <- allocateParty "Alice"
+    bob <- allocateParty "Bob"
+
+    -- contracts creation for alice
+    
+    -- in this case we don't keep the contract in a variable
+    submit alice do
+        createCmd Token with owner = alice
+
+    -- instead, in this case we hold the contract id in a variable   
+    aliceSecondToken <- submit alice do
+        createCmd SecondToken with owner = alice
+
+    -- contracts creation for bob (same as above)
+    submit bob do
+        createCmd SecondToken with owner = bob
+    bobToken <- submit bob do
+        createCmd Token with owner = bob
+
+    -- contracts archivial. Note that we use the variable holding the contract id    
+    submit alice do
+        archiveCmd aliceSecondToken
+    submit bob do
+        archiveCmd bobToken
