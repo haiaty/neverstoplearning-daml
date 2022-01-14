@@ -17,6 +17,8 @@ import Second_Token
 -- this is needed to specify the return type of the script. In this case it return void
 test_1 : Script ()
 
+-- if you want to have Script() we can use  'pure ()' at the end of statements 
+
 
 test_1 = script do
     -- parties creation
